@@ -1,0 +1,22 @@
+seed : 101
+debug : False
+exp_name : '2.5D'
+comment : 'unet-efficientnet-b3-320x384'
+model_name : 'Unet'
+backbone : 'efficientnet-b3'
+batch_size    : 64 # 64
+img_size      : [320, 384]
+epochs        : 15
+lr            : 0.002
+scheduler     : 'CosineAnnealingLR'
+min_lr        : 0.0000001
+T_0           : 25
+warmup_epochs : 0
+wd            : 0.000001
+n_accumulate  : 1
+n_fold        : 5
+folds         : [0, 1]
+num_classes   : 3
+device        : "cuda:1"
+data_root     : '/tmp/images/*' # 
+full_train    : False
