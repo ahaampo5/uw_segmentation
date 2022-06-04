@@ -10,11 +10,12 @@ import random
 import os, shutil, gc, yaml
 
 from tqdm import tqdm
-from glob import glob
+# from glob import glob
+import glob
 from collections import defaultdict
 from attrdict import AttrDict
 import time
-import copy
+from copy import deepcopy
 import joblib
 from joblib import Parallel, delayed
 
@@ -49,7 +50,9 @@ from scheduler import *
 from loss import *
 
 #################  config  #################
-config_name = 'unet-efficient-b3.yaml'
+config_name = 'unet-efficient-b3.yaml' # cuda:0
+# config_name = 'unext-resnext101_32x4d.yaml' # cuda:1
+
 with open(f'./configs/{config_name}', 'r') as f:
     CFG = AttrDict(yaml.load(f, yaml.FullLoader))
 print(CFG)
@@ -177,7 +180,7 @@ def run_training(model, optimizer, scheduler, device, num_epochs):
         print("cuda: {}\n".format(torch.cuda.get_device_name()))
     
     start = time.time()
-    best_model_wts = copy.deepcopy(model.state_dict())
+    best_model_wts = deepcopy(model.state_dict())
     best_dice      = -np.inf
     best_epoch     = -1
     history = defaultdict(list)
@@ -231,15 +234,15 @@ def run_training(model, optimizer, scheduler, device, num_epochs):
             run.summary["Best Dice"]    = best_dice
             run.summary["Best Jaccard"] = best_jaccard
             run.summary["Best Epoch"]   = best_epoch
-            best_model_wts = copy.deepcopy(model.state_dict())
-            PATH = f"/jckim/seg/pths/{CFG.comment}/best_epoch-{fold:02d}-dice{best_dice:.4f}.bin"
+            best_model_wts = deepcopy(model.state_dict())
+            PATH = f"./pths/{CFG.comment}/best_epoch-{fold:02d}-dice{best_dice:.4f}.bin"
             torch.save(model.state_dict(), PATH)
             # Save a model file from the current directory
             # wandb.save(PATH)
             print(f"Model Saved{sr_}")
             
-        last_model_wts = copy.deepcopy(model.state_dict())
-        PATH = f"/jckim/seg/pths/{CFG.comment}/last_epoch-{fold:02d}.bin"
+        last_model_wts = deepcopy(model.state_dict())
+        PATH = f"./pths/{CFG.comment}/last_epoch-{fold:02d}.bin"
         torch.save(model.state_dict(), PATH)
             
         print(); print()
@@ -261,11 +264,12 @@ os.makedirs(f"./pths/{CFG.comment}", exist_ok=True)
 set_seed(CFG.seed)
 
 # data setting
-path_df = pd.DataFrame(glob(CFG.data_root), columns=['image_path'])
+# print(pd, glob) 
+path_df = pd.DataFrame(glob.glob(CFG.data_root), columns=['image_path'])
 path_df['mask_path'] = path_df.image_path.str.replace('image','mask')
 path_df['id'] = path_df.image_path.map(lambda x: x.split('/')[-1].replace('.npy',''))
 
-df = pd.read_csv('/jckim/seg/train_.csv')
+df = pd.read_csv('./train_.csv')
 df['segmentation'] = df.segmentation.fillna('')
 df['rle_len'] = df.segmentation.map(len)
 
@@ -294,7 +298,7 @@ model = build_model(CFG)
 optimizer = optim.Adam(model.parameters(), lr=CFG.lr, weight_decay=CFG.wd)
 scheduler = fetch_scheduler(optimizer, CFG)
 
-
+# print(df.image_path)
 for fold in CFG.folds:
     print(f'#'*15)
     print(f'### Fold: {fold}')
