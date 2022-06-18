@@ -1,0 +1,24 @@
+seed : 42 # 101
+debug : False
+exp_name : '2.5D'
+comment : 'unext-resnext101_32x4d-320x384_lowlr'
+model_name : 'UNeXt'
+backbone : 'swsl_resnext101_32x4d'
+batch_size    : 32 # 64
+img_size      : [512, 512]
+epochs        : 50 # 15
+lr            : 0.0001 # 0.002
+scheduler     : 'CosineAnnealingLR'
+min_lr        : 0.0000001
+T_0           : 25
+warmup_epochs : 0
+wd            : 0.000001
+n_accumulate  : 1
+n_fold        : 5
+folds         : [0,1,2,3,4]
+num_classes   : 3
+device        : "cuda:0"
+data_root     : '../data/images/*' # '/tmp/images/*' # 
+full_train    : False
+center        : False
+kimin_model   : True

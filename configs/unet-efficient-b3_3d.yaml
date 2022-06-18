@@ -1,0 +1,30 @@
+seed : 101
+debug : False
+exp_name : '2.5D'
+comment : 'unet-eff-b3-448x448_resize_1stride' # 실험 꼭 고쳐야해
+# architecture
+model_name : 'Unet'
+backbone : 'efficientnet-b3'
+center        : False
+# data
+data_root     : '../data/images_448_448_resize_1_3/*' # '/tmp/images/*' #
+img_size      : [448, 448] # [320, 384]
+full_train    : False
+positive_only : False
+# general
+n_accumulate  : 1
+n_fold        : 5
+folds         : [0,1]
+batch_size    : 32 # 64
+epochs        : 50 # 15
+lr            : 0.001 # 0.002
+scheduler     : 'CosineAnnealingLR'
+min_lr        : 0.0000001
+T_0           : 25
+warmup_epochs : 0
+wd            : 0.000001
+
+num_classes   : 3
+device        : "cuda:1"
+ 
+

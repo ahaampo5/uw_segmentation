@@ -5,7 +5,6 @@ segmentation_models/
 UWMGI.ipynb
 Untitled-Copy1.ipynb
 pths/
-configs/
 
 main_3d.py
 main_cls.py
