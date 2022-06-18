@@ -291,7 +291,10 @@ df = df[~df['id'].str.contains(fault1) & ~df['id'].str.contains(fault2)].reset_i
 skf = StratifiedGroupKFold(n_splits=CFG.n_fold, shuffle=True, random_state=CFG.seed)
 for fold, (train_idx, val_idx) in enumerate(skf.split(df, df['empty'], groups = df["case"])):
     df.loc[val_idx, 'fold'] = fold
+
     
+if CFG.positive_only == True:
+    df = df[df['empty'] == False]
     
 # env setting
 model = build_model(CFG)

@@ -4,6 +4,14 @@ wandb/
 segmentation_models/
 UWMGI.ipynb
 Untitled-Copy1.ipynb
-configs/
 pths/
+configs/
+
+main_3d.py
+main_cls.py
+main_cls_.py
+make_3d.ipynb
+baseline_25d_unext_thr-v2.ipynb
+UWMGI_data.ipynb
+EDA-2.ipynb
 
