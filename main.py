@@ -102,9 +102,10 @@ def train_one_epoch(model, optimizer, scheduler, dataloader, device, epoch):
         y_pred = nn.Sigmoid()(y_pred)
         # print(masks.shape, y_pred.shape)
         train_dice1 = dice_coef(masks[:,0,:,:].unsqueeze(1), y_pred[:,0,:,:].unsqueeze(1)).cpu().detach().numpy()
-        train_dice2 = dice_coef(masks[:,1,:,:].unsqueeze(1), y_pred[:,1,:,:].unsqueeze(1)).cpu().detach().numpy()
-        train_dice3 = dice_coef(masks[:,2,:,:].unsqueeze(1), y_pred[:,2,:,:].unsqueeze(1)).cpu().detach().numpy()
-        class_scores.append([train_dice1, train_dice2, train_dice3])
+        # train_dice2 = dice_coef(masks[:,1,:,:].unsqueeze(1), y_pred[:,1,:,:].unsqueeze(1)).cpu().detach().numpy()
+        # train_dice3 = dice_coef(masks[:,2,:,:].unsqueeze(1), y_pred[:,2,:,:].unsqueeze(1)).cpu().detach().numpy()
+        # class_scores.append([train_dice1, train_dice2, train_dice3])
+        class_scores.append([train_dice1])
         
         train_dice = dice_coef(masks, y_pred).cpu().detach().numpy()
         train_jaccard = iou_coef(masks, y_pred).cpu().detach().numpy()
@@ -151,9 +152,10 @@ def valid_one_epoch(model, dataloader, device, epoch):
         y_pred = nn.Sigmoid()(y_pred)
         
         train_dice1 = dice_coef(masks[:,0,:,:].unsqueeze(1), y_pred[:,0,:,:].unsqueeze(1)).cpu().detach().numpy()
-        train_dice2 = dice_coef(masks[:,1,:,:].unsqueeze(1), y_pred[:,1,:,:].unsqueeze(1)).cpu().detach().numpy()
-        train_dice3 = dice_coef(masks[:,2,:,:].unsqueeze(1), y_pred[:,2,:,:].unsqueeze(1)).cpu().detach().numpy()
-        class_scores.append([train_dice1, train_dice2, train_dice3])
+        # train_dice2 = dice_coef(masks[:,1,:,:].unsqueeze(1), y_pred[:,1,:,:].unsqueeze(1)).cpu().detach().numpy()
+        # train_dice3 = dice_coef(masks[:,2,:,:].unsqueeze(1), y_pred[:,2,:,:].unsqueeze(1)).cpu().detach().numpy()
+        # class_scores.append([train_dice1, train_dice2, train_dice3])
+        class_scores.append([train_dice1]) #############################
         
         val_dice = dice_coef(masks, y_pred).cpu().detach().numpy()
         val_jaccard = iou_coef(masks, y_pred).cpu().detach().numpy()
@@ -213,14 +215,14 @@ def run_training(model, optimizer, scheduler, device, num_epochs):
                    "Train Dice": train_dice,
                    "Train Jaccard": train_jaccard,
                    "Train class1": train_class_scores[0],
-                   "Train class2": train_class_scores[1],
-                   "Train class3": train_class_scores[2],
+                   # "Train class2": train_class_scores[1],
+                   # "Train class3": train_class_scores[2],
                    "Valid Loss": valid_loss,
                    "Valid Dice": valid_dice,
                    "Valid Jaccard": valid_jaccard,
                    "Valid class1": valid_class_scores[0],
-                   "Valid class2": valid_class_scores[1],
-                   "Valid class3": valid_class_scores[2],
+                   # "Valid class2": valid_class_scores[1],
+                   # "Valid class3": valid_class_scores[2],
                    "LR":scheduler.get_last_lr()[0]})
         
         print(f'Valid Dice: {valid_dice:0.4f} | Valid Jaccard: {valid_jaccard:0.4f}')
@@ -270,6 +272,9 @@ path_df['mask_path'] = path_df.image_path.str.replace('image','mask')
 path_df['id'] = path_df.image_path.map(lambda x: x.split('/')[-1].replace('.npy',''))
 
 df = pd.read_csv('./train_.csv')
+if CFG.num_classes == 1:
+    df = df[df['class'] == CFG.class_name]
+
 df['segmentation'] = df.segmentation.fillna('')
 df['rle_len'] = df.segmentation.map(len)
 

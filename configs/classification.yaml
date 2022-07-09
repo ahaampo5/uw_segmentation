@@ -1,11 +1,11 @@
 seed : 101
 debug : False
 exp_name : '2.5D'
-comment : 'unext-resnext101_32x4d-320x384_lowlr'
+comment : 'classification_pad_1_3_middle'
 model_name : 'UNeXt'
 backbone : 'swsl_resnext101_32x4d'
 batch_size    : 64 # 64
-img_size      : [320, 384]
+img_size      : [384, 384]
 epochs        : 50 # 15
 lr            : 0.0001 # 0.002
 scheduler     : 'CosineAnnealingLR'
@@ -18,6 +18,7 @@ n_fold        : 5
 folds         : [0,1,2,3,4]
 num_classes   : 3
 device        : "cuda:1"
-data_root     : '../data/images/*' # '/tmp/images/*' # 
+data_root     : '../data/images_384_384_pad_1_3_middle/*' # '/tmp/images/*' # 
 full_train    : False
-center        : True
+center        : False
+classification: True

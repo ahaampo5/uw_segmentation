@@ -1,0 +1,32 @@
+seed : 101
+debug : False
+exp_name : '2.5D'
+comment : 'unet-eff-b3-512x512_resize_1stride_near_hardarg' # 실험 꼭 고쳐야해
+# architecture
+model_name : 'Unet'
+backbone : 'efficientnet-b3'
+center        : False
+# data
+data_root     : '../data/images_512_512_resize_1_3_linear/*' # '/tmp/images/*' #
+img_size      : [320, 384] # [320, 384]
+full_train    : False
+positive_only : False
+hard_arg      : False # False
+normalize     : 'minmax' # 'imagenet' #, 'imagenet' # minmax
+# general
+n_accumulate  : 1
+n_fold        : 5
+folds         : [0,1,2,3,4]
+batch_size    : 16 # 64
+epochs        : 50 # 15
+lr            : 0.001 # 0.002
+scheduler     : 'CosineAnnealingLR'
+min_lr        : 0.0000001
+T_0           : 25
+warmup_epochs : 0
+wd            : 0.000001
+
+num_classes   : 3
+device        : "cuda:0"
+ 
+

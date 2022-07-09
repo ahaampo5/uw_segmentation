@@ -1,7 +1,6 @@
 __pycache__/
 .ipynb_checkpoints/
 wandb/
-segmentation_models/
 UWMGI.ipynb
 Untitled-Copy1.ipynb
 pths/

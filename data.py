@@ -3,6 +3,7 @@ import torch
 from torch.utils.data import DataLoader
 import albumentations as A 
 import cv2
+from monai.transforms import CropForeground
 
 
 def load_img(path):
@@ -64,11 +65,18 @@ def get_train_transforms(CFG):
             ], p=1.0)
 
 def get_valid_transforms(CFG):
-    return A.Compose([
-        # A.Resize(*CFG.img_size, interpolation=cv2.INTER_NEAREST),
-        ], p=1.0)
+    if CFG.hard_arg:
+        return A.Compose([
+            A.Normalize()
+        ])
+    else:
+        return A.Compose([
+            # A.Resize(*CFG.img_size, interpolation=cv2.INTER_NEAREST),
+            ], p=1.0)
 
 
+    
+    
 class BuildDataset(torch.utils.data.Dataset):
     def __init__(self, CFG, df, label=True, transforms=None):
         self.df         = df
@@ -115,6 +123,7 @@ def prepare_loaders(fold, df, train_transforms, valid_transforms, CFG, debug=Fal
     if debug:
         train_df = train_df.head(32*5).query("empty==0")
         valid_df = valid_df.head(32*3).query("empty==0")
+
     train_dataset = BuildDataset(CFG, train_df, transforms=train_transforms)
     valid_dataset = BuildDataset(CFG, valid_df, transforms=valid_transforms)
 
